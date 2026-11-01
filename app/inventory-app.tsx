@@ -5522,6 +5522,10 @@ function text(value: unknown, fallback = "") {
 }
 
 function number(value: unknown, fallback = 0) {
+  // Number(null) and Number("") are 0, which silently beat the fallback: a line with no
+  // entered UOM quantity/price rendered as "0 ordered · $0.00" while the header showed the
+  // real total.
+  if (value === null || value === undefined || value === "") return fallback;
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : fallback;
 }
